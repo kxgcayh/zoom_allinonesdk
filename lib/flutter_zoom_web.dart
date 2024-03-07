@@ -30,7 +30,7 @@ class FlutterZoomWeb extends ZoomAllInOneSdkPlatform {
     ZoomMtg.preLoadWasm();
     ZoomMtg.prepareWebSDK();
 
-    ZoomMtg.i18n.load(options.language);
+//    ZoomMtg.i18n.load(options.language);
     ZoomMtg.init(InitParams(
       leaveUrl: '/index.html',
       success: allowInterop((res) {
