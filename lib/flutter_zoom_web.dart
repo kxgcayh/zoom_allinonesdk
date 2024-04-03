@@ -120,10 +120,11 @@ class FlutterZoomWeb extends ZoomAllInOneSdkPlatform {
         sdkKey: zoomoptions.clientId,
         passWord: meetingOptions.meetingPassword,
         success: allowInterop((var res) {
+          if(!completer.isCompleted)
           completer.complete(true);
         }),
         error: allowInterop((var res) {
-          completer.complete(false);
+          if(!completer.isCompleted)completer.complete(false);
         })));
     return completer.future;
   }
