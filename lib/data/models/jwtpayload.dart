@@ -33,4 +33,9 @@ class JwtPayload {
 
     return payload;
   }
+
+  @override
+  String toString() {
+    return 'JwtPayload(sdkKey: $sdkKey, appKey: $appKey, iat: $iat, exp: $exp, role: $role, tokenExp: $tokenExp, mn: $mn)';
+  }
 }

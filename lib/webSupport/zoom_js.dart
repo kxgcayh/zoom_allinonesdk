@@ -89,7 +89,7 @@ class MeetingStatus {
 @JS()
 class ZoomMtg {
   external static void setZoomJSLib(String path, String dir);
-  external static final i18n;
+  external static final dynamic i18n;
   external static void preLoadWasm();
   external static void prepareWebSDK();
   external static void prepareJssdk();

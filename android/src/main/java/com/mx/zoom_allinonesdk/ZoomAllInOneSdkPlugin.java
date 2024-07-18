@@ -111,10 +111,10 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
     // Handle Zoom SDK Initialization Result
     private void handleZoomSDKInitializationResult(int errorCode, int internalErrorCode, Result result) {
         if (errorCode != ZoomError.ZOOM_ERROR_SUCCESS) {
-            Toast.makeText(activity, "Failed to initialize Zoom SDK. Error: " + errorCode + ", internalErrorCode=" + internalErrorCode, Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Failed Download Zoom. Error: " + errorCode + ", internalErrorCode=" + internalErrorCode, Toast.LENGTH_LONG).show();
             result.error("SDK_INIT_ERROR", "Failed to initialize Zoom SDK", errorCode);
         } else {
-            Toast.makeText(activity, "Initialize Zoom SDK successfully.", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Download Zoom Successfully.", Toast.LENGTH_LONG).show();
             List<Integer> response = Arrays.asList(0, 0);
             result.success(response);
         }

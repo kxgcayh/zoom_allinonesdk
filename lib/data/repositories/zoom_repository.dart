@@ -37,8 +37,8 @@ class ZoomRepository {
           accessToken: accessToken);
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = response.data;
-        if (responseData.keys.contains(ZoomConstants.TOKEN)) {
-          return responseData[ZoomConstants.TOKEN];
+        if (responseData.keys.contains(ZoomConstants.token)) {
+          return responseData[ZoomConstants.token];
         } else {
           return "";
         }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'screen/dashboard_screen.dart';
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: DashBoardScreen(),
     debugShowCheckedModeBanner: false,
   ));

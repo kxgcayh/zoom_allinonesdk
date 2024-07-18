@@ -4,6 +4,7 @@ import 'package:zoom_allinonesdk/constants/zoom_constants.dart';
 import 'package:zoom_allinonesdk/data/models/accesstokenmodel.dart';
 import 'package:zoom_allinonesdk/data/providers/zoom_provider.dart';
 import 'package:zoom_allinonesdk/data/repositories/zoom_repository.dart';
+
 import 'data/models/meeting_options.dart';
 import 'data/models/zoom_options.dart';
 import 'data/util/jwt_generator.dart';
@@ -22,13 +23,13 @@ class MethodChannelZoomAllInOneSdk extends ZoomAllInOneSdkPlatform {
       String jwtSignature = jwtGenerator.generate(
           key: options.clientId ?? "", secret: options.clientSecert ?? "");
       final optionsMap = <String, dynamic>{
-        ZoomConstants.JWT_TOKEN: jwtSignature,
-        ZoomConstants.DOMAIN: options.domain,
+        ZoomConstants.jwtToken: jwtSignature,
+        ZoomConstants.domain: options.domain,
       };
 
       // Invoke method and handle the result
       final version = await methodChannel
-          .invokeMethod<List>(ZoomConstants.INIT_ZOOM, optionsMap)
+          .invokeMethod<List>(ZoomConstants.initZoom, optionsMap)
           .then<List>((List? value) => value ?? List.empty());
 
       return version;
@@ -42,23 +43,24 @@ class MethodChannelZoomAllInOneSdk extends ZoomAllInOneSdkPlatform {
     try {
       // Prepare options map
       final options = <String, dynamic>{
-        ZoomConstants.USER_ID: meetingOptions.userId ?? '',
-        ZoomConstants.MEETING_ID: meetingOptions.meetingId ?? '',
-        ZoomConstants.MEETING_PASSWORD: meetingOptions.meetingPassword ?? '',
-        ZoomConstants.DISABLE_DIAL_IN: meetingOptions.noDialInViaPhone ?? '',
-        ZoomConstants.DISABLE_DRIVE: meetingOptions.noDrivingMode ?? '',
-        ZoomConstants.DISABLE_INVITE: meetingOptions.noInvite ?? '',
-        ZoomConstants.DISABLE_SHARE: meetingOptions.noShare ?? '',
-        ZoomConstants.DISABLE_TITLEBAR: meetingOptions.noTitlebar ?? '',
-        ZoomConstants.NO_DISCONNECT_AUDIO:
-            meetingOptions.noDisconnectAudio ?? '',
-        ZoomConstants.VIEW_OPTIONS: meetingOptions.viewOptions ?? '',
-        ZoomConstants.NO_AUDIO: meetingOptions.noAudio ?? '',
+        ZoomConstants.userId: meetingOptions.userId ?? '',
+        ZoomConstants.userPassword: meetingOptions.userPassword ?? '',
+        ZoomConstants.displayName: meetingOptions.displayName ?? '',
+        ZoomConstants.meetingId: meetingOptions.meetingId ?? '',
+        ZoomConstants.meetingPassword: meetingOptions.meetingPassword ?? '',
+        ZoomConstants.noDialInViaPhone: meetingOptions.noDialInViaPhone ?? '',
+        ZoomConstants.noDrivingMode: meetingOptions.noDrivingMode ?? '',
+        ZoomConstants.noInvite: meetingOptions.noInvite ?? '',
+        ZoomConstants.noShare: meetingOptions.noShare ?? '',
+        ZoomConstants.noTitlebar: meetingOptions.noTitlebar ?? '',
+        ZoomConstants.noDisconnectAudio: meetingOptions.noDisconnectAudio ?? '',
+        ZoomConstants.viewOptions: meetingOptions.viewOptions ?? '',
+        ZoomConstants.noAudio: meetingOptions.noAudio ?? '',
       };
 
       // Invoke method and handle the result
       final result = await methodChannel.invokeMethod<bool>(
-        ZoomConstants.JOIN_MEETING,
+        ZoomConstants.joinMeeting,
         options,
       );
 
@@ -79,20 +81,19 @@ class MethodChannelZoomAllInOneSdk extends ZoomAllInOneSdkPlatform {
     try {
       // Prepare options map
       final options = <String, dynamic>{
-        ZoomConstants.MEETING_ID: meetingOptions.meetingId ?? '',
-        ZoomConstants.USER_ID: meetingOptions.userId ?? '',
-        ZoomConstants.DISPLAY_NAME: meetingOptions.displayName ?? '',
-        ZoomConstants.USER_PASSWORD: meetingOptions.userPassword ?? '',
-        ZoomConstants.DISABLE_DIAL_IN: meetingOptions.noDialInViaPhone ?? '',
-        ZoomConstants.DISABLE_DRIVE: meetingOptions.noDrivingMode ?? '',
-        ZoomConstants.DISABLE_INVITE: meetingOptions.noInvite ?? '',
-        ZoomConstants.DISABLE_SHARE: meetingOptions.noShare ?? '',
-        ZoomConstants.DISABLE_TITLEBAR: meetingOptions.noTitlebar ?? '',
-        ZoomConstants.VIEW_OPTIONS: meetingOptions.viewOptions ?? '',
-        ZoomConstants.NO_DISCONNECT_AUDIO:
-            meetingOptions.noDisconnectAudio ?? '',
-        ZoomConstants.NO_AUDIO: meetingOptions.noAudio ?? '',
-        ZoomConstants.USER_TYPE: meetingOptions.userType ?? '',
+        ZoomConstants.meetingId: meetingOptions.meetingId ?? '',
+        ZoomConstants.userId: meetingOptions.userId ?? '',
+        ZoomConstants.displayName: meetingOptions.displayName ?? '',
+        ZoomConstants.userPassword: meetingOptions.userPassword ?? '',
+        ZoomConstants.noDialInViaPhone: meetingOptions.noDialInViaPhone ?? '',
+        ZoomConstants.noDrivingMode: meetingOptions.noDrivingMode ?? '',
+        ZoomConstants.noInvite: meetingOptions.noInvite ?? '',
+        ZoomConstants.noShare: meetingOptions.noShare ?? '',
+        ZoomConstants.noTitlebar: meetingOptions.noTitlebar ?? '',
+        ZoomConstants.viewOptions: meetingOptions.viewOptions ?? '',
+        ZoomConstants.noDisconnectAudio: meetingOptions.noDisconnectAudio ?? '',
+        ZoomConstants.noAudio: meetingOptions.noAudio ?? '',
+        ZoomConstants.userType: meetingOptions.userType ?? '',
       };
 
       // Instantiate ZoomProvider and ZoomRepository
@@ -117,13 +118,13 @@ class MethodChannelZoomAllInOneSdk extends ZoomAllInOneSdkPlatform {
 
       // Add zak token to options map
       options
-          .addAll(<String, dynamic>{ZoomConstants.ZAK_TOKEN: zakTokenResponse});
+          .addAll(<String, dynamic>{ZoomConstants.zakToken: zakTokenResponse});
 
-      print("zak $zakTokenResponse");
+      debugPrint("zak $zakTokenResponse");
 
       // Invoke method and handle the result
       final version = await methodChannel.invokeMethod<List>(
-        ZoomConstants.START_MEETING,
+        ZoomConstants.startMeeting,
         options,
       );
 

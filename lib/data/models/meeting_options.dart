@@ -125,4 +125,9 @@ class MeetingOptions {
     this.noMeetingErrorMessage,
     this.noBottomToolbar,
   });
+
+  @override
+  String toString() {
+    return 'MeetingOptions(userId: $userId, userPassword: $userPassword, displayName: $displayName, meetingId: $meetingId, meetingPassword: $meetingPassword, noDrivingMode: $noDrivingMode, noInvite: $noInvite, noShare: $noShare, noTitlebar: $noTitlebar, noDisconnectAudio: $noDisconnectAudio, viewOptions: $viewOptions, noAudio: $noAudio, noVideo: $noVideo, zoomToken: $zoomToken, zoomAccessToken: $zoomAccessToken, jwtAPIKey: $jwtAPIKey, jwtSignature: $jwtSignature, userType: $userType, customMeetingId: $customMeetingId, customerKey: $customerKey, noChatMsgToast: $noChatMsgToast, noUnmuteConfirmDialog: $noUnmuteConfirmDialog, noWebinarRegisterDialog: $noWebinarRegisterDialog, inviteOptions: $inviteOptions, meetingViewsOptions: $meetingViewsOptions, noDialInViaPhone: $noDialInViaPhone, noDialOutToPhone: $noDialOutToPhone, noRecord: $noRecord, noMeetingEndMessage: $noMeetingEndMessage, noMeetingErrorMessage: $noMeetingErrorMessage, noBottomToolbar: $noBottomToolbar)';
+  }
 }

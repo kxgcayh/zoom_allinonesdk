@@ -47,4 +47,9 @@ class ZoomOptions {
       this.disableJoinAudio = false,
       this.audioPanelAlwaysOpen = false,
       this.backupUrl = ''});
+
+  @override
+  String toString() {
+    return 'ZoomOptions(domain: $domain, clientId: $clientId, clientSecert: $clientSecert, jwtSignature: $jwtSignature, language: $language, showMeetingHeader: $showMeetingHeader, disableInvite: $disableInvite, disableCallOut: $disableCallOut, disableRecord: $disableRecord, disableJoinAudio: $disableJoinAudio, audioPanelAlwaysOpen: $audioPanelAlwaysOpen, backupUrl: $backupUrl)';
+  }
 }

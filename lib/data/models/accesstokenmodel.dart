@@ -28,4 +28,9 @@ class AccessTokenModel {
       'scope': scope,
     };
   }
+
+  @override
+  String toString() {
+    return 'AccessTokenModel(accessToken: $accessToken, tokenType: $tokenType, expiresIn: $expiresIn, scope: $scope)';
+  }
 }
