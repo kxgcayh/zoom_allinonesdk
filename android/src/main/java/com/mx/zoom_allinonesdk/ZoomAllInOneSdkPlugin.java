@@ -2,14 +2,18 @@ package com.mx.zoom_allinonesdk;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.Result;
+import us.zoom.sdk.CustomizedNotificationData;
+import us.zoom.sdk.InMeetingNotificationHandle;
 import us.zoom.sdk.JoinMeetingOptions;
 import us.zoom.sdk.JoinMeetingParams;
 import us.zoom.sdk.MeetingError;
@@ -19,8 +23,10 @@ import us.zoom.sdk.MeetingServiceListener;
 import us.zoom.sdk.MeetingStatus;
 import us.zoom.sdk.StartMeetingOptions;
 import us.zoom.sdk.StartMeetingParams4NormalUser;
+import us.zoom.sdk.ZoomAuthenticationError;
 import us.zoom.sdk.ZoomError;
 import us.zoom.sdk.ZoomSDK;
+import us.zoom.sdk.ZoomSDKAuthenticationListener;
 import us.zoom.sdk.ZoomSDKInitParams;
 import us.zoom.sdk.ZoomSDKInitializeListener;
 import us.zoom.sdk.MeetingViewsOptions;
@@ -37,6 +43,7 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
 
     private MethodChannel channel;
     private Activity activity;
+    private EventChannel meetingStatusChannel;
     private Context context;
     private ZoomSDK zoomSDK = ZoomSDK.getInstance();
 
@@ -45,6 +52,8 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "zoom_allinonesdk");
         channel.setMethodCallHandler(this);
         context = flutterPluginBinding.getApplicationContext();
+
+        meetingStatusChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), "zoom_allinonesdk/flutter_zoom_meeting_event_stream");
     }
 
     @Override
@@ -59,6 +68,9 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
             case ZoomConstants.START_MEETING:
                 startMeeting(call, result);
                 break;
+            case ZoomConstants.STATUS_MEETING:
+                statusMeeting(result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -66,6 +78,7 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
 
     @Override
     public void onDetachedFromEngine(FlutterPlugin.FlutterPluginBinding binding) {
+        Log.d("ZoomAllInOneSdkPlugin", "onDetachedFromEngine");
         channel.setMethodCallHandler(null);
     }
 
@@ -96,6 +109,9 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
         ZoomSDKInitializeListener zoomSDKInitializeListener = new ZoomSDKInitializeListener() {
             @Override
             public void onZoomSDKInitializeResult(int errorCode, int internalErrorCode) {
+                MeetingService meetingService = zoomSDK.getMeetingService();                
+                meetingStatusChannel.setStreamHandler(new StatusStreamHandler(meetingService));
+
                 handleZoomSDKInitializationResult(errorCode, internalErrorCode, result);
             }
 
@@ -136,6 +152,11 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
 
         // Configure JoinMeetingOptions and JoinMeetingParams
         JoinMeetingOptions opts = new JoinMeetingOptions();
+        options.put("disableShare", "true");
+        options.put("disableInvite", "true");
+        opts.no_invite = parseBoolean(options, "disableInvite");
+        opts.no_share = parseBoolean(options, "disableShare");
+
         JoinMeetingParams params = new JoinMeetingParams();
         params.displayName = options.get(ZoomConstants.DISPLAY_NAME);
         params.meetingNo = options.get(ZoomConstants.MEETING_ID);
@@ -177,6 +198,24 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
         meetingService.startMeetingWithParams(context, startMeetingParamsWithoutLogin, startMeetingOptions);
     
         sendReply(result, Arrays.asList("MEETING SUCCESS", "200"));
+    }
+
+    private void statusMeeting(Result result) {
+        ZoomSDK zoomSDK = ZoomSDK.getInstance();
+        if (!zoomSDK.isInitialized()) {
+        Log.d("onZoomSDKInitializeResult", "statusMeeting: Not initialized!!!!!!");
+        result.success(Arrays.asList("MEETING_STATUS_UNKNOWN", "SDK not initialized"));
+        return;
+        }
+
+        MeetingService meetingService = zoomSDK.getMeetingService();
+        if (meetingService == null) {
+        result.success(Arrays.asList("MEETING_STATUS_UNKNOWN", "No status available"));
+        return;
+        }
+
+        MeetingStatus status = meetingService.getMeetingStatus();
+        result.success(status != null ? Arrays.asList(status.name(), "") : Arrays.asList("MEETING_STATUS_UNKNOWN", "No status available"));
     }
 
     // Send a reply to Flutter
@@ -243,7 +282,7 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
     // Callback for Zoom SDK initialization result
     @Override
     public void onZoomSDKInitializeResult(int errorCode, int internalErrorCode) {
-        Log.d("TAG", "onZoomSDKInitializeResult: " + errorCode + " , " + internalErrorCode);
+        Log.d("onZoomSDKInitializeResult", "onZoomSDKInitializeResult: " + errorCode + " , " + internalErrorCode);
     }
 
     // Callback for Zoom authentication identity expiration
@@ -255,23 +294,27 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
     // Callback when attached to an activity
     @Override
     public void onAttachedToActivity(ActivityPluginBinding binding) {
+        Log.d("ZoomAllInOneSdkPlugin", "onAttachedToActivity");
         activity = binding.getActivity();
     }
 
     // Callback when detached from an activity due to configuration changes
     @Override
     public void onDetachedFromActivityForConfigChanges() {
+        Log.d("ZoomAllInOneSdkPlugin", "onDetachedFromActivityForConfigChanges");
     }
 
     // Callback when reattached to an activity after configuration changes
     @Override
     public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
+        Log.d("ZoomAllInOneSdkPlugin", "onReattachedToActivityForConfigChanges");
         activity = binding.getActivity();
     }
 
     // Callback when detached from an activity
     @Override
     public void onDetachedFromActivity() {
+        Log.d("ZoomAllInOneSdkPlugin", "onDetachedFromActivity");
         channel.setMethodCallHandler(null);
     }
 

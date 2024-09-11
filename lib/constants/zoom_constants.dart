@@ -7,6 +7,7 @@ class ZoomConstants {
   static const String initZoom = 'initZoom';
   static const String joinMeeting = 'joinMeeting';
   static const String startMeeting = 'startMeeting';
+  static const String statusMeeting = 'statusMeeting';
 
   // Zoom options
   static const String jwtToken = 'jwtToken';
