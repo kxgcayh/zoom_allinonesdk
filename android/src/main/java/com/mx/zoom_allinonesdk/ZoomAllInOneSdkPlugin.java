@@ -130,7 +130,6 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
             Toast.makeText(activity, "Failed Download Zoom. Error: " + errorCode + ", internalErrorCode=" + internalErrorCode, Toast.LENGTH_LONG).show();
             result.error("SDK_INIT_ERROR", "Failed to initialize Zoom SDK", errorCode);
         } else {
-            Toast.makeText(activity, "Download Zoom Successfully.", Toast.LENGTH_LONG).show();
             List<Integer> response = Arrays.asList(0, 0);
             result.success(response);
         }
@@ -149,6 +148,19 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
 
         // Get MeetingService instance
         MeetingService meetingService = zoomSDK.getMeetingService();
+
+        // Check if a meeting is already in progress
+        MeetingStatus meetingStatus = meetingService.getMeetingStatus();
+        Log.d("ZoomAllInOneSdkPlugin", "Meeting status is " + meetingStatus);
+
+        if (meetingStatus == MeetingStatus.MEETING_STATUS_WAITINGFORHOST || meetingStatus == MeetingStatus.MEETING_STATUS_INMEETING) {
+            Log.d("ZoomAllInOneSdkPlugin", "Meeting is already in progress. Redirecting to the meeting.");
+            // If a meeting is already in progress, show the meeting activity
+            meetingService.returnToMeeting(activity);
+            Log.d("ZoomAllInOneSdkPlugin", "Redirecting to the ongoing meeting.");
+            result.success(true);
+            return;
+        }
 
         // Configure JoinMeetingOptions and JoinMeetingParams
         JoinMeetingOptions opts = new JoinMeetingOptions();
