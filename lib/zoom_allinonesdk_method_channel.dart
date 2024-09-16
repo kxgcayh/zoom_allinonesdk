@@ -14,6 +14,8 @@ import 'zoom_allinonesdk_platform_interface.dart';
 class MethodChannelZoomAllInOneSdk extends ZoomAllInOneSdkPlatform {
   @visibleForTesting
   final MethodChannel methodChannel = const MethodChannel('zoom_allinonesdk');
+  final EventChannel eventChannel =
+      const EventChannel('zoom_allinonesdk/flutter_zoom_meeting_event_stream');
 
   final jwtGenerator = JwtGenerator();
 
@@ -134,5 +136,30 @@ class MethodChannelZoomAllInOneSdk extends ZoomAllInOneSdkPlatform {
       // Throw a custom error to provide a meaningful error message
       throw ZoomError('Error starting meeting: $e');
     }
+  }
+
+  @override
+  Future<List> statusMeeting(String meetingId) async {
+    try {
+      final optionsMap = <String, dynamic>{
+        ZoomConstants.statusMeeting: '',
+      };
+
+      final status = await methodChannel
+          .invokeMethod<List>(
+            ZoomConstants.statusMeeting,
+            optionsMap,
+          )
+          .then<List>((List? value) => value ?? List.empty());
+
+      return status;
+    } catch (e) {
+      throw ZoomError('Error status meeting: $e');
+    }
+  }
+
+  @override
+  Stream<dynamic> onMeetingStatus() {
+    return eventChannel.receiveBroadcastStream();
   }
 }

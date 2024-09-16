@@ -6,6 +6,7 @@ public class ZoomConstants {
     public static final String INIT_ZOOM = "initZoom";
     public static final String JOIN_MEETING = "joinMeeting";
     public static final String START_MEETING = "startMeeting";
+    public static final String STATUS_MEETING = "statusMeeting";
 
     // Zoom options
     public static final String JWT_TOKEN = "jwtToken";

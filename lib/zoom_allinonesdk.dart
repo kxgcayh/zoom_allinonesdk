@@ -1,8 +1,9 @@
 import 'data/models/meeting_options.dart';
 import 'data/models/zoom_options.dart';
 import 'zoom_allinonesdk_platform_interface.dart';
-export 'data/models/zoom_options.dart';
+
 export 'data/models/meeting_options.dart';
+export 'data/models/zoom_options.dart';
 
 class ZoomAllInOneSdk {
   ZoomAllInOneSdk({ZoomAllInOneSdkPlatform? platform})
@@ -30,5 +31,13 @@ class ZoomAllInOneSdk {
         clientId: clientId,
         clientSecret: clientSecret,
         meetingOptions: meetingOptions);
+  }
+
+  Future<List> statusMeeting({required String meetingId}) {
+    return _platform.statusMeeting(meetingId);
+  }
+
+  Stream<dynamic> onMeetingStatus() {
+    return _platform.onMeetingStatus();
   }
 }
