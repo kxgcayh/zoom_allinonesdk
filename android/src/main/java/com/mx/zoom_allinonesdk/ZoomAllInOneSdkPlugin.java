@@ -177,6 +177,25 @@ public class ZoomAllInOneSdkPlugin implements FlutterPlugin, MethodChannel.Metho
         // Configure JoinMeetingOptions and JoinMeetingParams
         JoinMeetingOptions opts = new JoinMeetingOptions();
 
+        opts.no_invite = parseBoolean(options, ZoomConstants.MEETING_NO_INVITE);
+        opts.no_share = parseBoolean(options, ZoomConstants.MEETING_NO_SHARE);
+        opts.no_driving_mode = parseBoolean(options, ZoomConstants.MEETING_NO_DRIVING_MODE);
+        opts.no_invite = parseBoolean(options, ZoomConstants.MEETING_NO_INVITE);
+        opts.no_share = parseBoolean(options, ZoomConstants.MEETING_NO_SHARE);
+        opts.no_titlebar = parseBoolean(options, ZoomConstants.MEETING_NO_TITLEBAR);
+        opts.no_disconnect_audio = parseBoolean(options, ZoomConstants.MEETING_NO_DISCONNECT_AUDIO);
+        opts.no_audio = parseBoolean(options, ZoomConstants.MEETING_NO_AUDIO);
+        opts.no_video = parseBoolean(options, ZoomConstants.MEETING_NO_VIDEO);
+        opts.no_chat_msg_toast = parseBoolean(options, ZoomConstants.MEETING_NO_CHAT_MSG_TOAST);
+        opts.no_unmute_confirm_dialog = parseBoolean(options, ZoomConstants.MEETING_NO_UNMUTE_CONFIRM_DIALOG);
+        opts.no_webinar_register_dialog = parseBoolean(options, ZoomConstants.MEETING_NO_WEBINAR_REGISTER_DIALOG);
+        opts.no_dial_in_via_phone = parseBoolean(options, ZoomConstants.MEETING_NO_DIAL_IN_VIA_PHONE);
+        opts.no_dial_out_to_phone = parseBoolean(options, ZoomConstants.MEETING_NO_DIAL_OUT_TO_PHONE);
+        opts.no_record = parseBoolean(options, ZoomConstants.MEETING_NO_RECORD);
+        opts.no_meeting_end_message = parseBoolean(options, ZoomConstants.MEETING_NO_MEETING_END_MESSAGE);
+        opts.no_meeting_error_message = parseBoolean(options, ZoomConstants.MEETING_NO_MEETING_ERROR_MESSAGE);
+        opts.no_bottom_toolbar = parseBoolean(options, ZoomConstants.MEETING_NO_BOTTOM_TOOLBAR);
+
         JoinMeetingParams params = new JoinMeetingParams();
         params.displayName = options.get(ZoomConstants.DISPLAY_NAME);
         params.meetingNo = options.get(ZoomConstants.MEETING_ID);

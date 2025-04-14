@@ -14,16 +14,14 @@ import 'zoom_allinonesdk_platform_interface.dart';
 class MethodChannelZoomAllInOneSdk extends ZoomAllInOneSdkPlatform {
   @visibleForTesting
   final MethodChannel methodChannel = const MethodChannel('zoom_allinonesdk');
-  final EventChannel eventChannel =
-      const EventChannel('zoom_allinonesdk/flutter_zoom_meeting_event_stream');
+  final EventChannel eventChannel = const EventChannel('zoom_allinonesdk/flutter_zoom_meeting_event_stream');
 
   final jwtGenerator = JwtGenerator();
 
   @override
   Future<List> initZoom({required ZoomOptions options}) async {
     try {
-      String jwtSignature = jwtGenerator.generate(
-          key: options.clientId ?? "", secret: options.clientSecert ?? "");
+      String jwtSignature = jwtGenerator.generate(key: options.clientId ?? "", secret: options.clientSecert ?? "");
       final optionsMap = <String, dynamic>{
         ZoomConstants.jwtToken: jwtSignature,
         ZoomConstants.domain: options.domain,
@@ -58,6 +56,15 @@ class MethodChannelZoomAllInOneSdk extends ZoomAllInOneSdkPlatform {
         ZoomConstants.noDisconnectAudio: meetingOptions.noDisconnectAudio ?? '',
         ZoomConstants.viewOptions: meetingOptions.viewOptions ?? '',
         ZoomConstants.noAudio: meetingOptions.noAudio ?? '',
+        ZoomConstants.noVideo: meetingOptions.noVideo ?? '',
+        ZoomConstants.noChatMsgToast: meetingOptions.noChatMsgToast ?? '',
+        ZoomConstants.noUnmuteConfirmDialog: meetingOptions.noUnmuteConfirmDialog ?? '',
+        ZoomConstants.noWebinarRegisterDialog: meetingOptions.noWebinarRegisterDialog ?? '',
+        ZoomConstants.noDialOutToPhone: meetingOptions.noDialOutToPhone ?? '',
+        ZoomConstants.noRecord: meetingOptions.noRecord ?? '',
+        ZoomConstants.noMeetingEndMessage: meetingOptions.noMeetingEndMessage ?? '',
+        ZoomConstants.noMeetingErrorMessage: meetingOptions.noMeetingErrorMessage ?? '',
+        ZoomConstants.noBottomToolbar: meetingOptions.noBottomToolbar ?? '',
       };
 
       // Invoke method and handle the result
@@ -100,12 +107,10 @@ class MethodChannelZoomAllInOneSdk extends ZoomAllInOneSdkPlatform {
 
       // Instantiate ZoomProvider and ZoomRepository
       final ZoomProvider zoomProvider = ZoomProvider();
-      final ZoomRepository repository =
-          ZoomRepository(zoomProvider: zoomProvider);
+      final ZoomRepository repository = ZoomRepository(zoomProvider: zoomProvider);
 
       // Fetch access token
-      final AccessTokenModel accessTokenResponse =
-          await repository.fetchAccesstoken(
+      final AccessTokenModel accessTokenResponse = await repository.fetchAccesstoken(
         accountId: accountId,
         clientId: clientId,
         clientSecret: clientSecret,
@@ -119,8 +124,7 @@ class MethodChannelZoomAllInOneSdk extends ZoomAllInOneSdkPlatform {
       );
 
       // Add zak token to options map
-      options
-          .addAll(<String, dynamic>{ZoomConstants.zakToken: zakTokenResponse});
+      options.addAll(<String, dynamic>{ZoomConstants.zakToken: zakTokenResponse});
 
       debugPrint("zak $zakTokenResponse");
 
