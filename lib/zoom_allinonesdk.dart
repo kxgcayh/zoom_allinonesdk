@@ -6,8 +6,7 @@ export 'data/models/meeting_options.dart';
 export 'data/models/zoom_options.dart';
 
 class ZoomAllInOneSdk {
-  ZoomAllInOneSdk({ZoomAllInOneSdkPlatform? platform})
-      : _platform = platform ?? ZoomAllInOneSdkPlatform.instance;
+  ZoomAllInOneSdk({ZoomAllInOneSdkPlatform? platform}) : _platform = platform ?? ZoomAllInOneSdkPlatform.instance;
 
   final ZoomAllInOneSdkPlatform _platform;
 
@@ -17,7 +16,7 @@ class ZoomAllInOneSdk {
     return _platform.initZoom(options: zoomOptions);
   }
 
-  Future<bool> joinMeting({required MeetingOptions meetingOptions}) {
+  Future<dynamic> joinMeting({required MeetingOptions meetingOptions}) {
     return _platform.joinMeeting(meetingOptions: meetingOptions);
   }
 
@@ -27,10 +26,7 @@ class ZoomAllInOneSdk {
       required String accountId,
       required MeetingOptions meetingOptions}) {
     return _platform.startMeeting(
-        accountId: accountId,
-        clientId: clientId,
-        clientSecret: clientSecret,
-        meetingOptions: meetingOptions);
+        accountId: accountId, clientId: clientId, clientSecret: clientSecret, meetingOptions: meetingOptions);
   }
 
   Future<List> statusMeeting({required String meetingId}) {
