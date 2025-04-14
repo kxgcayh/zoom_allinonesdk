@@ -41,7 +41,7 @@ abstract class ZoomAllInOneSdkPlatform extends PlatformInterface {
   }
 
   /// Flutter Zoom SDK Join Meeting function
-  Future<bool> joinMeeting({required MeetingOptions meetingOptions}) async {
+  Future<dynamic> joinMeeting({required MeetingOptions meetingOptions}) async {
     throw UnimplementedError('joinMeeting() has not been implemented.');
   }
 

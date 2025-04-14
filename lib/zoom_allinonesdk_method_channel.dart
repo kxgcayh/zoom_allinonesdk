@@ -39,7 +39,7 @@ class MethodChannelZoomAllInOneSdk extends ZoomAllInOneSdkPlatform {
   }
 
   @override
-  Future<bool> joinMeeting({required MeetingOptions meetingOptions}) async {
+  Future<dynamic> joinMeeting({required MeetingOptions meetingOptions}) async {
     try {
       // Prepare options map
       final options = <String, dynamic>{
